@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:weather_app/widgets/forecast_hour_item.dart';
 import '../../colors/colors.dart';
 import 'dart:ui';
 import 'package:weather_app/widgets/search_bar.dart';
@@ -14,7 +15,7 @@ class HomeView extends StatefulWidget {
   State<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView> {
+class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
   final WeatherService _weatherService = WeatherService();
   Map<String, dynamic>? weatherData;
   bool isLoading = true;
@@ -22,6 +23,7 @@ class _HomeViewState extends State<HomeView> {
   List<Map<String, dynamic>> searchResults = [];
   bool isSearching = false;
   final TextEditingController _searchController = TextEditingController();
+  late TabController _hourlyTabController;
 
   String formatDateTime(DateTime dateTime) {
     // Danh sách thứ trong tuần
@@ -44,8 +46,18 @@ class _HomeViewState extends State<HomeView> {
     _getCurrentLocation();
   }
 
+  void _initHourlyTabController() {
+    final hourlyData = weatherData!['forecast']['forecastday'][0]['hour'];
+    final pageCount = (hourlyData.length / 3).ceil();
+    _hourlyTabController = TabController(
+      length: pageCount,
+      vsync: this
+    );
+  }
+
   @override
   void dispose() {
+    _hourlyTabController.dispose();
     _searchController.dispose();
     super.dispose();
   }
@@ -93,6 +105,7 @@ class _HomeViewState extends State<HomeView> {
         setState(() {
           weatherData = data;
           isLoading = false;
+          _initHourlyTabController();
         });
       }
     } catch (e) {
@@ -124,6 +137,41 @@ class _HomeViewState extends State<HomeView> {
       searchResults = results;
       isSearching = false;
     });
+  }
+
+  List<Widget> _buildHourlyForecastPages() {
+    final List<Widget> pages = [];
+    final hourlyData = weatherData!['forecast']['forecastday'][0]['hour'];
+    
+    for (var i = 0; i < hourlyData.length; i += 3) {
+      final pageItems = <Widget>[];
+      
+      for (var j = i; j < i + 3 && j < hourlyData.length; j++) {
+        final hourData = hourlyData[j];
+        final time = DateTime.parse(hourData['time']);
+        
+        pageItems.add(
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 16.0),
+              child: ForecastHourItem(
+                time: DateFormat('HH:mm').format(time),
+                temperature: hourData['temp_c'].toString(),
+                weatherIcon: weatherData?['forecast']?['forecastday']?[0]?['hour']?[j]?['condition']?['icon'] ?? '',
+              ),
+            ),
+          ),
+        );
+      }
+      
+      pages.add(
+        Row(
+          children: pageItems,
+        ),
+      );
+    }
+    
+    return pages;
   }
 
   @override
@@ -227,46 +275,6 @@ class _HomeViewState extends State<HomeView> {
                                   const SizedBox(height: 20),
                                   Divider(color: AppColors.white, height: 1),
                                   const SizedBox(height: 20),
-                                  Text('The Next Day Forecast', style: TextStyle(color: AppColors.white, fontSize: 24, fontWeight: FontWeight.w500)),
-                                  const SizedBox(height: 16),
-                                  Expanded(
-                                    child: ListView(
-                                      children: [
-                                        ForecastDayItem(
-                                          day: 'Tuesday',
-                                          temperature: '26',
-                                          humidity: '75%',
-                                          windSpeed: '12 km/h',
-                                          rainChance: '30%',
-                                          weatherIcon: Icons.wb_sunny,
-                                        ),
-                                        ForecastDayItem(
-                                          day: 'Wednesday',
-                                          temperature: '25',
-                                          humidity: '80%',
-                                          windSpeed: '10 km/h',
-                                          rainChance: '45%',
-                                          weatherIcon: Icons.cloud,
-                                        ),
-                                        ForecastDayItem(
-                                          day: 'Thursday',
-                                          temperature: '24',
-                                          humidity: '80%',
-                                          windSpeed: '10 km/h',
-                                          rainChance: '45%',
-                                          weatherIcon: Icons.cloudy_snowing,
-                                        ),
-                                        ForecastDayItem(
-                                          day: 'Friday',
-                                          temperature: '27',
-                                          humidity: '80%',
-                                          windSpeed: '10 km/h',
-                                          rainChance: '45%',
-                                          weatherIcon: Icons.wb_sunny,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
                                 ],
                               ),
                             ),
@@ -342,7 +350,7 @@ class _HomeViewState extends State<HomeView> {
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Padding(
-                                    padding: const EdgeInsets.all(20.0),
+                                    padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 20.0),
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
@@ -370,7 +378,15 @@ class _HomeViewState extends State<HomeView> {
                                           )
                                         ),
                                         const SizedBox(height: 10),
-                                        Text('UV Index - ${weatherData?['current']?['uv']?.toString() ?? 'loading...'}', 
+                                        Text('Sunrise - ${weatherData?['forecast']?['forecastday']?[0]?['astro']?['sunrise'] ?? 'loading...'}', 
+                                          style: TextStyle(
+                                            color: AppColors.white, 
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.bold
+                                          )
+                                        ),
+                                        const SizedBox(height: 10),
+                                        Text('Sunset - ${weatherData?['forecast']?['forecastday']?[0]?['astro']?['sunset'] ?? 'loading...'}', 
                                           style: TextStyle(
                                             color: AppColors.white, 
                                             fontSize: 24,
@@ -382,9 +398,47 @@ class _HomeViewState extends State<HomeView> {
                                   ),
                                 ),
                                 const SizedBox(height: 30),
-                                Text("Today's Highlights", style: TextStyle(color: AppColors.white, fontSize: 28, fontWeight: FontWeight.bold)),
-                                const SizedBox(height: 10),
-                                
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("Hourly Forecast", 
+                                      style: TextStyle(
+                                        color: AppColors.white, 
+                                        fontSize: 28, 
+                                        fontWeight: FontWeight.bold
+                                      )
+                                    ),
+                                    Row(
+                                      children: [
+                                        IconButton(
+                                          icon: Icon(Icons.arrow_back_ios, color: AppColors.white),
+                                          onPressed: () {
+                                            if (_hourlyTabController.index > 0) {
+                                              _hourlyTabController.animateTo(_hourlyTabController.index - 1);
+                                            }
+                                          },
+                                        ),
+                                        IconButton(
+                                          icon: Icon(Icons.arrow_forward_ios, color: AppColors.white),
+                                          onPressed: () {
+                                            if (_hourlyTabController.index < _hourlyTabController.length - 1) {
+                                              _hourlyTabController.animateTo(_hourlyTabController.index + 1);
+                                            }
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 20),
+                                Expanded(
+                                  child: weatherData?['forecast']?['forecastday']?.isNotEmpty ?? false
+                                    ? TabBarView(
+                                        controller: _hourlyTabController,
+                                        children: _buildHourlyForecastPages(),
+                                      )
+                                    : Center(child: Text('Không có dữ liệu', style: TextStyle(color: AppColors.white))),
+                                ),
                               ],
                             ),
                           ),
@@ -410,34 +464,46 @@ class _HomeViewState extends State<HomeView> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('UV Index - ${weatherData?['current']?['uv']?.toString() ?? 'loading...'}', 
-                                  style: TextStyle(
-                                    color: AppColors.white, 
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.bold
-                                  )
-                                ),
-                                Text('Wind Speed - ${weatherData?['current']?['wind_kph']?.toString() ?? 'loading...'} km/h', 
-                                  style: TextStyle(
-                                    color: AppColors.white, 
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.bold
-                                  )
-                                ),
-                                Text('Sunrise - ${weatherData?['location']?['sunrise'] ?? 'loading...'}', 
-                                  style: TextStyle(
-                                    color: AppColors.white, 
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.bold
-                                  )
-                                ),
-                                Text('Sunset - 06:00 PM', 
-                                  style: TextStyle(
-                                    color: AppColors.white, 
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.bold
-                                  )
-                                ),
+                                Text('The Next Day Forecast', style: TextStyle(color: AppColors.white, fontSize: 28, fontWeight: FontWeight.bold)),
+                                  const SizedBox(height: 16),
+                                  Expanded(
+                                    child: ListView(
+                                      children: [
+                                        ForecastDayItem(
+                                          day: 'Tuesday - 01/04/2025',
+                                          temperature: '26',
+                                          humidity: '75%',
+                                          windSpeed: '12 km/h',
+                                          rainChance: '30%',
+                                          weatherIcon: Icons.wb_sunny,
+                                        ),
+                                        ForecastDayItem(
+                                          day: 'Wednesday',
+                                          temperature: '25',
+                                          humidity: '80%',
+                                          windSpeed: '10 km/h',
+                                          rainChance: '45%',
+                                          weatherIcon: Icons.cloud,
+                                        ),
+                                        ForecastDayItem(
+                                          day: 'Thursday',
+                                          temperature: '24',
+                                          humidity: '80%',
+                                          windSpeed: '10 km/h',
+                                          rainChance: '45%',
+                                          weatherIcon: Icons.cloudy_snowing,
+                                        ),
+                                        ForecastDayItem(
+                                          day: 'Friday',
+                                          temperature: '27',
+                                          humidity: '80%',
+                                          windSpeed: '10 km/h',
+                                          rainChance: '45%',
+                                          weatherIcon: Icons.wb_sunny,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                               ],
                             ),
                           ),

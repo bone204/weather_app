@@ -32,17 +32,26 @@ class WeatherService {
   }
 
   Future<Map<String, dynamic>?> fetchWeather(String city) async {
-    final url = Uri.parse('$baseUrl/current.json?key=$apiKey&q=$city&aqi=no');
+    final url = Uri.parse('$baseUrl/forecast.json?key=$apiKey&q=$city&days=1&aqi=no');
 
     try {
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        // Chuyển đổi URL icon thành URL đầy đủ
+        // Chuyển đổi URL icon cho current weather
         if (data['current']?['condition']?['icon'] != null) {
           data['current']['condition']['icon'] = 
               getIconUrl(data['current']['condition']['icon']);
+        }
+        
+        // Chuyển đổi URL icon cho forecast
+        if (data['forecast']?['forecastday']?.isNotEmpty) {
+          for (var hour in data['forecast']['forecastday'][0]['hour']) {
+            if (hour['condition']?['icon'] != null) {
+              hour['condition']['icon'] = getIconUrl(hour['condition']['icon']);
+            }
+          }
         }
         return data;
       } else {

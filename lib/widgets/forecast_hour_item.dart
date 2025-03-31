@@ -5,7 +5,7 @@ import 'package:weather_app/colors/colors.dart';
 class ForecastHourItem extends StatelessWidget {
   final String time;
   final String temperature;
-  final IconData weatherIcon;
+  final String weatherIcon;
   
   const ForecastHourItem({
     Key? key,
@@ -22,31 +22,26 @@ class ForecastHourItem extends StatelessWidget {
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
           width: 160,
-          height: 240,
           decoration: BoxDecoration(
             // ignore: deprecated_member_use
-            color: Colors.white.withOpacity(0.2),
+            color: AppColors.white.withOpacity(0.2),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
                   time,
                   style: TextStyle(
                     color: AppColors.white,
-                    fontSize: 24,
+                    fontSize: 28,
                     fontWeight: FontWeight.w500
                   ),
                 ),
-                SizedBox(height: 20),
-                Icon(
-                  weatherIcon,
-                  size: 64,
-                  color: AppColors.white,
-                ),
+                SizedBox(height: 10),
+                Image.network(weatherIcon),
                 SizedBox(height: 20),
                 Text(
                   '$temperature°C',
