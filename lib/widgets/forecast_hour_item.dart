@@ -48,7 +48,7 @@ class ForecastHourItem extends StatelessWidget {
                   style: const TextStyle(
                     color: AppColors.white,
                     fontSize: 20,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ],

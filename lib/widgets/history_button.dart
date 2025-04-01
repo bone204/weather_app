@@ -39,7 +39,7 @@ class HistoryButton extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text(
-                            'Lịch sử tìm kiếm',
+                            'Search History',
                             style: TextStyle(
                               color: AppColors.white,
                               fontSize: 20,
@@ -116,7 +116,7 @@ class HistoryButton extends StatelessWidget {
         },
         style: ElevatedButton.styleFrom(
           // ignore: deprecated_member_use
-          backgroundColor: AppColors.blue,
+          backgroundColor: AppColors.green,
           padding: const EdgeInsets.symmetric(vertical: 20),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
@@ -128,7 +128,7 @@ class HistoryButton extends StatelessWidget {
             Icon(Icons.history, color: AppColors.white, size: 24,),
             SizedBox(width: 8),
             Text(
-              'Lịch sử tìm kiếm',
+              'Search History',
               style: TextStyle(
                 color: AppColors.white,
                 fontSize: 18,

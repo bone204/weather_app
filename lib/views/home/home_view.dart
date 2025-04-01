@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:weather_app/widgets/forecast_email_register.dart';
 import 'package:weather_app/widgets/forecast_hour_item.dart';
 import '../../colors/colors.dart';
 import 'dart:ui';
@@ -202,7 +203,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                   ),
                                   const SizedBox(height: 20),
                                   const Divider(color: AppColors.white, height: 1),
-                                  const SizedBox(height: 20),
+                                  const SizedBox(height: 30),
                                   HistoryButton(
                                     weatherService: weatherProvider.weatherService,
                                     onLocationSelected: (data) {
@@ -210,6 +211,8 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                       _searchController.clear();
                                     },
                                   ),
+                                  const SizedBox(height: 20),
+                                  const ForecastEmailRegister(),
                                 ],
                               ),
                             ),
