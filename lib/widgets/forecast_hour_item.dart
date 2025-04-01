@@ -34,18 +34,18 @@ class ForecastHourItem extends StatelessWidget {
               children: [
                 Text(
                   time,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: AppColors.white,
                     fontSize: 20,
                     fontWeight: FontWeight.w500
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Image.network(weatherIcon),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Text(
                   '$temperature°C',
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: AppColors.white,
                     fontSize: 20,
                     fontWeight: FontWeight.w500,

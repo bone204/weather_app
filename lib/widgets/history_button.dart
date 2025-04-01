@@ -15,7 +15,7 @@ class HistoryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () {
@@ -38,7 +38,7 @@ class HistoryButton extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
+                          const Text(
                             'Lịch sử tìm kiếm',
                             style: TextStyle(
                               color: AppColors.white,
@@ -47,7 +47,7 @@ class HistoryButton extends StatelessWidget {
                             ),
                           ),
                           IconButton(
-                            icon: Icon(Icons.close, color: AppColors.white),
+                            icon: const Icon(Icons.close, color: AppColors.white),
                             onPressed: () => Navigator.pop(context),
                           ),
                         ],
@@ -60,8 +60,8 @@ class HistoryButton extends StatelessWidget {
                         future: weatherService.getHistory(),
                         builder: (context, snapshot) {
                           if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                            return Padding(
-                              padding: const EdgeInsets.all(16.0),
+                            return const Padding(
+                              padding: EdgeInsets.all(16.0),
                               child: Text(
                                 'Chưa có lịch sử tìm kiếm',
                                 style: TextStyle(color: AppColors.white),
@@ -79,11 +79,11 @@ class HistoryButton extends StatelessWidget {
                                     width: 40,
                                     height: 40,
                                     errorBuilder: (context, error, stackTrace) =>
-                                      Icon(Icons.cloud, color: AppColors.white),
+                                      const Icon(Icons.cloud, color: AppColors.white),
                                   ),
                                   title: Text(
                                     '${item['location']}, ${item['country']}',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: AppColors.white,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -98,6 +98,7 @@ class HistoryButton extends StatelessWidget {
                                     if (data != null) {
                                       onLocationSelected(data);
                                     }
+                                    // ignore: use_build_context_synchronously
                                     Navigator.pop(context);
                                   },
                                 );
@@ -115,23 +116,23 @@ class HistoryButton extends StatelessWidget {
         },
         style: ElevatedButton.styleFrom(
           // ignore: deprecated_member_use
-          backgroundColor: Colors.white.withOpacity(0.2),
-          padding: EdgeInsets.symmetric(vertical: 20),
+          backgroundColor: AppColors.blue,
+          padding: const EdgeInsets.symmetric(vertical: 20),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
         ),
-        child: Row(
+        child: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.history, color: AppColors.white),
+            Icon(Icons.history, color: AppColors.white, size: 24,),
             SizedBox(width: 8),
             Text(
               'Lịch sử tìm kiếm',
               style: TextStyle(
                 color: AppColors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ],

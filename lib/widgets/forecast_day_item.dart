@@ -44,7 +44,7 @@ class ForecastDayItem extends StatelessWidget {
               flex: 2,
               child: Text(
                 '$day - $date',
-                style: TextStyle(
+                style: const TextStyle(
                   color: AppColors.white,
                   fontSize: 18,
                   fontWeight: FontWeight.w500
@@ -55,7 +55,7 @@ class ForecastDayItem extends StatelessWidget {
             const SizedBox(width: 12),
             Text(
               '$temperature°C',
-              style: TextStyle(
+              style: const TextStyle(
                 color: AppColors.white,
                 fontSize: 18,
                 fontWeight: FontWeight.w500
@@ -92,7 +92,7 @@ class ForecastDayItem extends StatelessWidget {
         const SizedBox(width: 8),
         Text(
           '$label: $value',
-          style: TextStyle(
+          style: const TextStyle(
             color: AppColors.white,
             fontSize: 16,
           ),
