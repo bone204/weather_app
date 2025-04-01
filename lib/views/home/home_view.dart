@@ -7,6 +7,7 @@ import 'package:weather_app/widgets/search_bar.dart';
 import 'package:weather_app/widgets/forecast_day_item.dart';
 import 'package:weather_app/services/weather_service.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:weather_app/widgets/history_button.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -82,9 +83,6 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
         // ignore: deprecated_member_use
         desiredAccuracy: LocationAccuracy.high
       );
-
-      print(position);
-      print(weatherData?['forecast']?['forecastday']?.length);
       
       currentPosition = position;
       // Gọi API thời tiết với tọa độ
@@ -278,6 +276,14 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                   const SizedBox(height: 20),
                                   Divider(color: AppColors.white, height: 1),
                                   const SizedBox(height: 20),
+                                  HistoryButton(
+                                    weatherService: _weatherService,
+                                    onLocationSelected: (data) {
+                                      setState(() {
+                                        weatherData = data;
+                                      });
+                                    },
+                                  ),
                                 ],
                               ),
                             ),
@@ -361,7 +367,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                           style: TextStyle(
                                             color: AppColors.white, 
                                             fontSize: 24,
-                                            fontWeight: FontWeight.bold
+                                            fontWeight: FontWeight.w500
                                           )
                                         ),
                                         const SizedBox(height: 10),
@@ -369,7 +375,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                           style: TextStyle(
                                             color: AppColors.white, 
                                             fontSize: 24,
-                                            fontWeight: FontWeight.bold
+                                            fontWeight: FontWeight.w500
                                           )
                                         ),
                                         const SizedBox(height: 10),
@@ -377,7 +383,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                           style: TextStyle(
                                             color: AppColors.white, 
                                             fontSize: 24,
-                                            fontWeight: FontWeight.bold
+                                            fontWeight: FontWeight.w500
                                           )
                                         ),
                                         const SizedBox(height: 10),
@@ -385,7 +391,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                           style: TextStyle(
                                             color: AppColors.white, 
                                             fontSize: 24,
-                                            fontWeight: FontWeight.bold
+                                            fontWeight: FontWeight.w500
                                           )
                                         ),
                                         const SizedBox(height: 10),
@@ -393,7 +399,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                           style: TextStyle(
                                             color: AppColors.white, 
                                             fontSize: 24,
-                                            fontWeight: FontWeight.bold
+                                            fontWeight: FontWeight.w500
                                           )
                                         ),
                                       ],
@@ -505,4 +511,5 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
     );
   }
 }
+
 

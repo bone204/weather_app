@@ -28,26 +28,26 @@ class ForecastHourItem extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.all(10.0),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   time,
                   style: TextStyle(
                     color: AppColors.white,
-                    fontSize: 28,
+                    fontSize: 20,
                     fontWeight: FontWeight.w500
                   ),
                 ),
                 SizedBox(height: 10),
                 Image.network(weatherIcon),
-                SizedBox(height: 20),
+                SizedBox(height: 10),
                 Text(
                   '$temperature°C',
                   style: TextStyle(
                     color: AppColors.white,
-                    fontSize: 24,
+                    fontSize: 20,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
