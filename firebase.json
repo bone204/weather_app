@@ -1,0 +1,53 @@
+{
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "hosting": {
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "weatherapp-e5a1d",
+          "appId": "1:103039117015:android:5ecafde32f7267d335b292",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "weatherapp-e5a1d",
+          "configurations": {
+            "android": "1:103039117015:android:5ecafde32f7267d335b292",
+            "ios": "1:103039117015:ios:afdc245ab107792735b292",
+            "macos": "1:103039117015:ios:afdc245ab107792735b292",
+            "web": "1:103039117015:web:da2ded93510db62c35b292",
+            "windows": "1:103039117015:web:b65b9b0504ce5d0335b292"
+          }
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run lint"
+      ]
+    }
+  ]
+}

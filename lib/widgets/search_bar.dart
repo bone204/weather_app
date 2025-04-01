@@ -41,6 +41,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
               child: TextField(
                 controller: widget.searchController,
                 style: const TextStyle(color: AppColors.white),
+                cursorColor: AppColors.white,
                 decoration: InputDecoration(
                   hintText: 'Tìm kiếm địa điểm...',
                   hintStyle: TextStyle(color: AppColors.white.withOpacity(0.7)),
