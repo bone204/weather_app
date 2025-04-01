@@ -82,6 +82,9 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
         // ignore: deprecated_member_use
         desiredAccuracy: LocationAccuracy.high
       );
+
+      print(position);
+      print(weatherData?['forecast']?['forecastday']?.length);
       
       currentPosition = position;
       // Gọi API thời tiết với tọa độ
@@ -465,45 +468,27 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text('The Next Day Forecast', style: TextStyle(color: AppColors.white, fontSize: 28, fontWeight: FontWeight.bold)),
-                                  const SizedBox(height: 16),
-                                  Expanded(
-                                    child: ListView(
-                                      children: [
-                                        ForecastDayItem(
-                                          day: 'Tuesday - 01/04/2025',
-                                          temperature: '26',
-                                          humidity: '75%',
-                                          windSpeed: '12 km/h',
-                                          rainChance: '30%',
-                                          weatherIcon: Icons.wb_sunny,
-                                        ),
-                                        ForecastDayItem(
-                                          day: 'Wednesday',
-                                          temperature: '25',
-                                          humidity: '80%',
-                                          windSpeed: '10 km/h',
-                                          rainChance: '45%',
-                                          weatherIcon: Icons.cloud,
-                                        ),
-                                        ForecastDayItem(
-                                          day: 'Thursday',
-                                          temperature: '24',
-                                          humidity: '80%',
-                                          windSpeed: '10 km/h',
-                                          rainChance: '45%',
-                                          weatherIcon: Icons.cloudy_snowing,
-                                        ),
-                                        ForecastDayItem(
-                                          day: 'Friday',
-                                          temperature: '27',
-                                          humidity: '80%',
-                                          windSpeed: '10 km/h',
-                                          rainChance: '45%',
-                                          weatherIcon: Icons.wb_sunny,
-                                        ),
-                                      ],
-                                    ),
+                                const SizedBox(height: 16),
+                                Expanded(
+                                  child: ListView.builder(
+                                    itemCount: (weatherData?['forecast']?['forecastday']?.length ?? 0) - 1,
+                                    itemBuilder: (context, index) {
+                                      final dayData = weatherData!['forecast']['forecastday'][index + 1];
+                                      final date = DateTime.parse(dayData['date']);
+                                      final weekday = DateFormat('EEEE').format(date); 
+                                      
+                                      return ForecastDayItem(
+                                        day: weekday,
+                                        date: dayData['date'],
+                                        temperature: dayData['day']['avgtemp_c'].toString(),
+                                        humidity: '${dayData['day']['avghumidity']}%',
+                                        windSpeed: '${dayData['day']['maxwind_kph']} km/h',
+                                        rainChance: '${dayData['day']['daily_chance_of_rain']}%',
+                                        weatherIcon: dayData['day']['condition']['icon'], 
+                                      );
+                                    },
                                   ),
+                                ),
                               ],
                             ),
                           ),

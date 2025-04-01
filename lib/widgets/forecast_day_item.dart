@@ -3,15 +3,17 @@ import 'package:weather_app/colors/colors.dart';
 
 class ForecastDayItem extends StatelessWidget {
   final String day;
+  final String date;
   final String temperature;
   final String humidity;
   final String windSpeed;
   final String rainChance;
-  final IconData weatherIcon;
+  final String weatherIcon;
 
   const ForecastDayItem({
     Key? key,
     required this.day,
+    required this.date,
     required this.temperature,
     required this.humidity,
     required this.windSpeed,
@@ -41,7 +43,7 @@ class ForecastDayItem extends StatelessWidget {
             Expanded(
               flex: 2,
               child: Text(
-                day,
+                '$day - $date',
                 style: TextStyle(
                   color: AppColors.white,
                   fontSize: 18,
@@ -49,11 +51,7 @@ class ForecastDayItem extends StatelessWidget {
                 ),
               ),
             ),
-            Icon(
-              weatherIcon,
-              color: AppColors.white,
-              size: 28,
-            ),
+            Image.network(weatherIcon, width: 28, height: 28),
             const SizedBox(width: 12),
             Text(
               '$temperature°C',

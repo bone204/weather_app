@@ -32,7 +32,7 @@ class WeatherService {
   }
 
   Future<Map<String, dynamic>?> fetchWeather(String city) async {
-    final url = Uri.parse('$baseUrl/forecast.json?key=$apiKey&q=$city&days=1&aqi=no');
+    final url = Uri.parse('$baseUrl/forecast.json?key=$apiKey&q=$city&days=7&aqi=no');
 
     try {
       final response = await http.get(url);
