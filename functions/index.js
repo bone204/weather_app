@@ -32,6 +32,44 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+// HTTP endpoint để xử lý xác nhận
+exports.confirmEmail = functions.https.onRequest(async (req, res) => {
+  try {
+    const email = req.query.email;
+    const token = req.query.token;
+
+    if (!email || !token) {
+      // eslint-disable-next-line max-len
+      return res.status(400).send("Email và token xác nhận không được để trống");
+    }
+
+    const db = admin.firestore();
+    const subscriptionRef = db.collection("subscriptions").doc(email);
+    const subscription = await subscriptionRef.get();
+
+    if (!subscription.exists) {
+      return res.status(404).send("Không tìm thấy thông tin đăng ký");
+    }
+
+    const subscriptionData = subscription.data();
+    if (subscriptionData.confirmationToken !== token) {
+      return res.status(400).send("Token xác nhận không hợp lệ");
+    }
+
+    await subscriptionRef.update({
+      isConfirmed: true,
+      confirmedAt: admin.firestore.FieldValue.serverTimestamp(),
+      confirmationToken: null,
+    });
+
+    // Chuyển hướng về trang chủ với thông báo thành công
+    res.redirect(`${process.env.APP_URL}?confirmed=true`);
+  } catch (error) {
+    console.error("Error confirming subscription:", error);
+    res.status(500).send("Có lỗi xảy ra khi xác nhận đăng ký");
+  }
+});
+
 exports.subscribeToWeather = functions.https.onCall(async (request) => {
   try {
     const {email, city} = request.data;
@@ -66,9 +104,10 @@ exports.subscribeToWeather = functions.https.onCall(async (request) => {
       isConfirmed: false,
     });
 
-    // Gửi email xác nhận
-    // eslint-disable-next-line max-len
-    const confirmationUrl = `${process.env.APP_URL}/confirm?email=${email}&token=${confirmationToken}`;
+    // Gửi email xác nhận với URL mới
+    const region = process.env.FUNCTION_REGION || "us-central1";
+    const projectId = process.env.GCLOUD_PROJECT;
+    const confirmationUrl = `https://${region}-${projectId}.cloudfunctions.net/confirmEmail?email=${email}&token=${confirmationToken}`;
 
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
@@ -89,43 +128,6 @@ exports.subscribeToWeather = functions.https.onCall(async (request) => {
   } catch (error) {
     console.error("Error subscribing:", error);
     throw new functions.https.HttpsError("internal", error.message);
-  }
-});
-
-exports.confirmSubscription = functions.https.onCall(async (request) => {
-  try {
-    const {email, token} = request.data;
-
-    if (!email || !token) {
-      throw new Error("Email và token xác nhận không được để trống");
-    }
-
-    const db = admin.firestore();
-    const subscriptionRef = db.collection("subscriptions").doc(email);
-    const subscription = await subscriptionRef.get();
-
-    if (!subscription.exists) {
-      throw new Error("Không tìm thấy thông tin đăng ký");
-    }
-
-    const subscriptionData = subscription.data();
-    if (subscriptionData.confirmationToken !== token) {
-      throw new Error("Token xác nhận không hợp lệ");
-    }
-
-    await subscriptionRef.update({
-      isConfirmed: true,
-      confirmedAt: admin.firestore.FieldValue.serverTimestamp(),
-      confirmationToken: null,
-    });
-
-    return {
-      success: true,
-      message: "Xác nhận đăng ký thành công!",
-    };
-  } catch (error) {
-    console.error("Error confirming subscription:", error);
-    throw new Error(error.message);
   }
 });
 

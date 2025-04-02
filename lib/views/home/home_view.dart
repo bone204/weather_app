@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:weather_app/widgets/forecast_hour_item.dart';
 import '../../colors/colors.dart';
+import 'dart:html' as html;
 import 'dart:ui';
 import 'package:weather_app/widgets/search_bar.dart';
 import 'package:weather_app/widgets/forecast_day_item.dart';
@@ -38,7 +39,25 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
     _hourlyTabController = TabController(length: 1, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<WeatherProvider>().getCurrentLocation();
+      _checkConfirmation();
     });
+  }
+
+  void _checkConfirmation() {
+    final uri = Uri.parse(html.window.location.href);
+    if (uri.queryParameters['confirmed'] == 'true') {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Xác nhận đăng ký thành công!'),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 5),
+          ),
+        );
+        // Xóa tham số confirmed khỏi URL
+        html.window.history.pushState({}, '', uri.path);
+      });
+    }
   }
 
   @override
