@@ -1,0 +1,17 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /forecast_subscribers/{email} {
+      // Cho phép đọc nếu người dùng đã đăng nhập và email trùng khớp
+      allow read: if request.auth != null && request.auth.token.email == email;
+      // Cho phép ghi nếu người dùng đã đăng nhập
+      allow write: if request.auth != null;
+    }
+
+    // Các collection khác sẽ được bảo vệ mặc định
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

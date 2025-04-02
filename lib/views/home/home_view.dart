@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:weather_app/widgets/forecast_email_register.dart';
 import 'package:weather_app/widgets/forecast_hour_item.dart';
 import '../../colors/colors.dart';
 import 'dart:ui';
@@ -9,6 +8,7 @@ import 'package:weather_app/widgets/forecast_day_item.dart';
 import 'package:weather_app/widgets/history_button.dart';
 import 'package:provider/provider.dart';
 import '../../providers/weather_provider.dart';
+import 'package:weather_app/widgets/subscribe_button.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -212,7 +212,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                     },
                                   ),
                                   const SizedBox(height: 20),
-                                  const ForecastEmailRegister(),
+                                  const SubscribeButton(),
                                 ],
                               ),
                             ),

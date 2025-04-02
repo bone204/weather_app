@@ -1,11 +1,10 @@
 import 'dart:convert';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class WeatherService {
-  final String apiKey = dotenv.env['WEATHER_API_KEY'] ?? ''; 
-  final String baseUrl = 'http://api.weatherapi.com/v1';
+  final String apiKey = 'f3b63d0f85e842529d882310253103'; 
+  final String baseUrl = 'https://api.weatherapi.com/v1';
   static const String _historyKey = 'weather_history';
 
   String getIconUrl(String? iconCode) {
