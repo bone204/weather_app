@@ -116,7 +116,7 @@ class HistoryButton extends StatelessWidget {
         },
         style: ElevatedButton.styleFrom(
           // ignore: deprecated_member_use
-          backgroundColor: AppColors.green,
+          backgroundColor: AppColors.blue,
           padding: const EdgeInsets.symmetric(vertical: 20),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
