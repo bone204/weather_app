@@ -153,11 +153,24 @@ exports.unsubscribeFromWeather = functions.https.onCall(async (request) => {
     const {email} = request.data;
 
     if (!email) {
-      throw new Error("Email không được để trống");
+      throw new functions.https.HttpsError(
+          "invalid-argument",
+          "Email không được để trống",
+      );
     }
 
     const db = admin.firestore();
-    await db.collection("subscriptions").doc(email).delete();
+    const subscriptionRef = db.collection("subscriptions").doc(email);
+    const subscription = await subscriptionRef.get();
+
+    if (!subscription.exists || !subscription.data().isConfirmed) {
+      throw new functions.https.HttpsError(
+          "not-found",
+          "Không tìm thấy thông tin đăng ký hoặc đăng ký chưa được xác nhận",
+      );
+    }
+
+    await subscriptionRef.delete();
 
     return {
       success: true,
@@ -165,6 +178,9 @@ exports.unsubscribeFromWeather = functions.https.onCall(async (request) => {
     };
   } catch (error) {
     console.error("Error unsubscribing:", error);
-    throw new Error(error.message);
+    if (error instanceof functions.https.HttpsError) {
+      throw error;
+    }
+    throw new functions.https.HttpsError("internal", error.message);
   }
 });

@@ -73,7 +73,7 @@ class SubscribeButton extends StatelessWidget {
             Icon(Icons.notifications_active, color: AppColors.white, size: 24),
             SizedBox(width: 8),
             Text(
-              'Đăng ký nhận thông tin',
+              'Register for weather updates',
               style: TextStyle(
                 color: AppColors.white,
                 fontSize: 18,
