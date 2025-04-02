@@ -67,14 +67,12 @@ class WeatherService {
         final now = DateTime.now();
         final today = DateTime(now.year, now.month, now.day);
         
-        // Lọc chỉ lấy dữ liệu của ngày hôm nay
         final todayHistory = List<Map<String, dynamic>>.from(decoded).where((item) {
           final itemDate = DateTime.parse(item['timestamp']);
           final itemDay = DateTime(itemDate.year, itemDate.month, itemDate.day);
           return itemDay.isAtSameMomentAs(today);
         }).toList();
 
-        // Nếu không còn dữ liệu của ngày hôm nay, xóa toàn bộ lịch sử
         if (todayHistory.isEmpty) {
           await prefs.remove(_historyKey);
         }
@@ -104,13 +102,12 @@ class WeatherService {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        // Chuyển đổi URL icon cho current weather
+
         if (data['current']?['condition']?['icon'] != null) {
           data['current']['condition']['icon'] = 
               getIconUrl(data['current']['condition']['icon']);
         }
         
-        // Chuyển đổi URL icon cho forecast
         if (data['forecast']?['forecastday']?.isNotEmpty) {
           for (var hour in data['forecast']['forecastday'][0]['hour']) {
             if (hour['condition']?['icon'] != null) {

@@ -1,13 +1,10 @@
+/* eslint-disable linebreak-style */
+/* eslint-disable no-inner-declarations */
+/* eslint-disable require-jsdoc */
+// eslint-disable-next-line linebreak-style
+// eslint-disable-next-line linebreak-style
 /* eslint-disable max-len */
 /* eslint-disable linebreak-style */
-/**
- * Import function triggers from their respective submodules:
- *
- * const {onCall} = require("firebase-functions/v2/https");
- * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
 
 require("firebase-functions/v2/https");
 require("dotenv").config({path: ".env.local"});
@@ -17,17 +14,9 @@ const admin = require("firebase-admin");
 const nodemailer = require("nodemailer");
 const https = require("https");
 
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
-
-// exports.helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
 
 admin.initializeApp();
 
-// Cấu hình email transporter
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -36,7 +25,6 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// HTTP endpoint để xử lý xác nhận
 exports.confirmEmail = functions.https.onRequest(async (req, res) => {
   try {
     const email = req.query.email;
@@ -66,7 +54,6 @@ exports.confirmEmail = functions.https.onRequest(async (req, res) => {
       confirmationToken: null,
     });
 
-    // Chuyển hướng về trang chủ với thông báo thành công
     res.redirect(`${process.env.APP_URL}?confirmed=true`);
   } catch (error) {
     console.error("Error confirming subscription:", error);
@@ -85,7 +72,6 @@ exports.subscribeToWeather = functions.https.onCall(async (request) => {
       );
     }
 
-    // Validate email format
     const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
     if (!emailRegex.test(email)) {
       throw new functions.https.HttpsError(
@@ -94,7 +80,6 @@ exports.subscribeToWeather = functions.https.onCall(async (request) => {
       );
     }
 
-    // Kiểm tra xem email đã đăng ký và xác nhận chưa
     const db = admin.firestore();
     const subscriptionRef = db.collection("subscriptions").doc(email);
     const subscription = await subscriptionRef.get();
@@ -109,11 +94,9 @@ exports.subscribeToWeather = functions.https.onCall(async (request) => {
       }
     }
 
-    // Tạo token xác nhận
     const crypto = require("crypto");
     const confirmationToken = crypto.randomBytes(32).toString("hex");
 
-    // Lưu thông tin đăng ký vào Firestore
     await subscriptionRef.set({
       email,
       city,
@@ -122,7 +105,6 @@ exports.subscribeToWeather = functions.https.onCall(async (request) => {
       isConfirmed: false,
     });
 
-    // Gửi email xác nhận với URL mới
     const region = process.env.FUNCTION_REGION || "us-central1";
     const projectId = process.env.GCLOUD_PROJECT;
     const confirmationUrl = `https://${region}-${projectId}.cloudfunctions.net/confirmEmail?email=${email}&token=${confirmationToken}`;
@@ -191,51 +173,48 @@ exports.unsubscribeFromWeather = functions.https.onCall(async (request) => {
 
 // Hàm gửi dự báo thời tiết hằng ngày cho người dùng đã xác nhận
 exports.sendDailyForecast = onSchedule({
-  schedule: "0 7 * * *", 
-  timeZone: "Asia/Ho_Chi_Minh", 
-  retryCount: 3, 
-  memory: "256MiB", 
+  schedule: "0 7 * * *",
+  timeZone: "Asia/Ho_Chi_Minh",
+  retryCount: 3,
+  memory: "256MiB",
 }, async (context) => {
   try {
     console.log("Starting daily forecast email job");
-    
-    // Lấy danh sách các subscription đã được xác nhận
+
     const db = admin.firestore();
     const confirmedSubscriptionsSnapshot = await db.collection("subscriptions")
         .where("isConfirmed", "==", true)
         .get();
-    
+
     if (confirmedSubscriptionsSnapshot.empty) {
       console.log("No confirmed subscribers found.");
       return null;
     }
-    
+
     console.log(`Found ${confirmedSubscriptionsSnapshot.size} confirmed subscribers.`);
-    
-    // Lấy API key từ biến môi trường
+
     const weatherApiKey = process.env.WEATHER_API_KEY;
     if (!weatherApiKey) {
       throw new Error("Weather API key is not configured.");
     }
-    
-    // Hàm helper để lấy dữ liệu từ API thời tiết
+
     function getWeatherData(city) {
       return new Promise((resolve, reject) => {
         const apiUrl = `https://api.weatherapi.com/v1/forecast.json?key=${weatherApiKey}&q=${encodeURIComponent(city)}&days=1&aqi=no&alerts=no`;
-        
+
         https.get(apiUrl, (res) => {
           let data = "";
-          
+
           res.on("data", (chunk) => {
             data += chunk;
           });
-          
+
           res.on("end", () => {
             if (res.statusCode !== 200) {
               reject(new Error(`Weather API error: ${res.statusMessage}`));
               return;
             }
-            
+
             try {
               const weatherData = JSON.parse(data);
               resolve(weatherData);
@@ -248,22 +227,19 @@ exports.sendDailyForecast = onSchedule({
         });
       });
     }
-    
+
     // Xử lý từng người đăng ký
     const promises = confirmedSubscriptionsSnapshot.docs.map(async (doc) => {
       const subscription = doc.data();
       const {email, city} = subscription;
-      
+
       try {
-        // Gọi API lấy dự báo thời tiết
         const weatherData = await getWeatherData(city);
-        
-        // Lấy thông tin dự báo
+
         const forecast = weatherData.forecast.forecastday[0];
         const current = weatherData.current;
         const location = weatherData.location;
-        
-        // Tạo nội dung email
+
         const emailHtml = `
           <html>
             <head>
@@ -294,7 +270,7 @@ exports.sendDailyForecast = onSchedule({
                 </div>
                 
                 <p class="detail"><strong>Nhiệt độ:</strong> Thấp nhất ${forecast.day.mintemp_c}°C / Cao nhất ${forecast.day.maxtemp_c}°C</p>
-                <p class="detail"><strong>Cảm giác như:</strong> ${current.feelslike_c}°C</p>
+                <p class="detail"><strong>Nhiệt độ cảm nhận:</strong> ${current.feelslike_c}°C</p>
                 <p class="detail"><strong>Độ ẩm:</strong> ${current.humidity}%</p>
                 <p class="detail"><strong>Gió:</strong> ${current.wind_kph} km/h</p>
                 <p class="detail"><strong>Khả năng mưa:</strong> ${forecast.day.daily_chance_of_rain}%</p>
@@ -313,15 +289,14 @@ exports.sendDailyForecast = onSchedule({
             </body>
           </html>
         `;
-        
-        // Gửi email
+
         await transporter.sendMail({
           from: process.env.EMAIL_USER,
           to: email,
           subject: `Dự báo thời tiết hôm nay cho ${location.name}`,
           html: emailHtml,
         });
-        
+
         console.log(`Sent daily forecast to ${email} for ${city}`);
         return {email, success: true};
       } catch (error) {
@@ -329,14 +304,12 @@ exports.sendDailyForecast = onSchedule({
         return {email, success: false, error: error.message};
       }
     });
-    
-    // Đợi tất cả các email được gửi
+
     const results = await Promise.all(promises);
-    
-    // Thống kê
+
     const successCount = results.filter((r) => r.success).length;
     const failureCount = results.length - successCount;
-    
+
     console.log(`Daily forecast job completed: ${successCount} succeeded, ${failureCount} failed`);
     return null;
   } catch (error) {
