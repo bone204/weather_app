@@ -191,10 +191,10 @@ exports.unsubscribeFromWeather = functions.https.onCall(async (request) => {
 
 // Hàm gửi dự báo thời tiết hằng ngày cho người dùng đã xác nhận
 exports.sendDailyForecast = onSchedule({
-  schedule: "13 21 * * *", // Chạy lúc 9:10 PM mỗi ngày (21:10)
-  timeZone: "Asia/Ho_Chi_Minh", // Múi giờ Việt Nam
-  retryCount: 3, // Số lần thử lại nếu có lỗi
-  memory: "256MiB", // Lượng bộ nhớ cấp phát
+  schedule: "0 7 * * *", 
+  timeZone: "Asia/Ho_Chi_Minh", 
+  retryCount: 3, 
+  memory: "256MiB", 
 }, async (context) => {
   try {
     console.log("Starting daily forecast email job");
