@@ -90,13 +90,27 @@ exports.subscribeToWeather = functions.https.onCall(async (request) => {
       );
     }
 
+    // Kiểm tra xem email đã đăng ký và xác nhận chưa
+    const db = admin.firestore();
+    const subscriptionRef = db.collection("subscriptions").doc(email);
+    const subscription = await subscriptionRef.get();
+
+    if (subscription.exists) {
+      const subscriptionData = subscription.data();
+      if (subscriptionData.isConfirmed) {
+        throw new functions.https.HttpsError(
+            "already-exists",
+            "Email này đã được đăng ký và xác nhận trước đó",
+        );
+      }
+    }
+
     // Tạo token xác nhận
     const crypto = require("crypto");
     const confirmationToken = crypto.randomBytes(32).toString("hex");
 
     // Lưu thông tin đăng ký vào Firestore
-    const db = admin.firestore();
-    await db.collection("subscriptions").doc(email).set({
+    await subscriptionRef.set({
       email,
       city,
       confirmationToken,
@@ -127,6 +141,9 @@ exports.subscribeToWeather = functions.https.onCall(async (request) => {
     };
   } catch (error) {
     console.error("Error subscribing:", error);
+    if (error instanceof functions.https.HttpsError) {
+      throw error;
+    }
     throw new functions.https.HttpsError("internal", error.message);
   }
 });
