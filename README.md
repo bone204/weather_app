@@ -46,11 +46,13 @@ Chạy ứng dụng
 
 ## Demo
 
-https://youtu.be/x9yB8uIXGU4
+Demo v1: https://youtu.be/x9yB8uIXGU4
 
-https://imgur.com/a/SJOpvtT
+Demo v2: https://youtu.be/w5O2BII11ZM
 
-https://imgur.com/8HkFqB2
+Hình ảnh mail dự báo thời tiết: https://imgur.com/a/SJOpvtT
+
+Ảnh lưu trữ mail người dùng: https://imgur.com/8HkFqB2
 ## Lưu ý
 
 - Khi gửi xác nhận mail thì anh/chị sử dụng trang web đã deploy: https://weatherapp-c58f4.web.app/ 
