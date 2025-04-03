@@ -33,16 +33,9 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
   }
 
   void _onCityChanged() {
-    if (_isCitySelectedFromSuggestion && 
-        _cityController.text != _cityController.text) {
-      setState(() {
-        _isCitySelectedFromSuggestion = false;
-      });
-    }
-
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
-      if (_cityController.text.isNotEmpty && _cityController.text.length > 2) {
+      if (_cityController.text.isNotEmpty && _cityController.text.length > 2 && !_isCitySelectedFromSuggestion) {
         _searchCities(_cityController.text);
       } else {
         setState(() {
@@ -57,7 +50,6 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
 
     setState(() {
       _isSearching = true;
-      _isCitySelectedFromSuggestion = false;
     });
 
     try {

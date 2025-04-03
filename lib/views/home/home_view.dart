@@ -232,7 +232,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                             ),
                                             const SizedBox(height: 8),
                                             Text(
-                                              'Wind: ${weatherProvider.weatherData?['current']?['wind_kph']?.toString() ?? 'loading...'} M/S',
+                                              'Wind: ${weatherProvider.weatherData?['current']?['wind_kph']?.toString() ?? 'loading...'} km/h',
                                               style: const TextStyle(
                                                 color: AppColors.white,
                                                 fontSize: 20,
@@ -376,7 +376,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                                   date: dayData['date'],
                                                   temperature: dayData['day']['avgtemp_c'].toString(),
                                                   humidity: '${dayData['day']['avghumidity']}%',
-                                                  windSpeed: '${dayData['day']['maxwind_kph']} M/S',
+                                                  windSpeed: '${dayData['day']['maxwind_kph']} km/h',
                                                   rainChance: '${dayData['day']['daily_chance_of_rain']}%',
                                                   weatherIcon: dayData['day']['condition']['icon'],
                                                   isLastItem: index == _visibleDays - 1,
