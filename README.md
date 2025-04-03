@@ -56,5 +56,6 @@ Hình ảnh mail dự báo thời tiết: https://imgur.com/a/SJOpvtT
 ## Lưu ý
 
 - Khi gửi xác nhận mail thì anh/chị sử dụng trang web đã deploy: https://weatherapp-c58f4.web.app/ 
+- Nếu anh/chị không thấy thay đổi UI version 2 thì gõ lệnh ctrl + shift + r để reload lại
 - Chạy local không gửi được mail
 
