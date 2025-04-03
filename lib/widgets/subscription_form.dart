@@ -25,7 +25,6 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
   bool _isSearching = false;
   Timer? _debounce;
   bool _isCitySelectedFromSuggestion = false;
-  String? _selectedCityId;
 
   @override
   void initState() {
@@ -38,7 +37,6 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
         _cityController.text != _cityController.text) {
       setState(() {
         _isCitySelectedFromSuggestion = false;
-        _selectedCityId = null;
       });
     }
 
@@ -96,7 +94,6 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
       _cityController.text = "${city['name']}, ${city['country']}";
       _citySuggestions = [];
       _isCitySelectedFromSuggestion = true;
-      _selectedCityId = city['id'].toString();
     });
   }
 
@@ -129,7 +126,6 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
         _emailController.clear();
         _cityController.clear();
         _isCitySelectedFromSuggestion = false;
-        _selectedCityId = null;
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -255,7 +251,6 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
                                 setState(() {
                                   _citySuggestions = [];
                                   _isCitySelectedFromSuggestion = false;
-                                  _selectedCityId = null;
                                 });
                               },
                             )

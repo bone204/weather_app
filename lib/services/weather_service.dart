@@ -9,7 +9,7 @@ class WeatherService {
 
   String getIconUrl(String? iconCode) {
     if (iconCode == null) return '';
-    // WeatherAPI trả về icon dạng "//cdn.weatherapi.com/weather/64x64/day/116.png"
+    // WeatherAPI trả về icon dạng "//cdn.weatherapi.com"
     // Cần thêm https: vào đầu URL
     return 'https:$iconCode';
   }

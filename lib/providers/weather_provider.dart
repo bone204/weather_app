@@ -10,7 +10,6 @@ class WeatherProvider extends ChangeNotifier {
   List<Map<String, dynamic>> _searchResults = [];
   bool _isSearching = false;
 
-  // Getters
   Map<String, dynamic>? get weatherData => _weatherData;
   bool get isLoading => _isLoading;
   Position? get currentPosition => _currentPosition;
@@ -18,7 +17,6 @@ class WeatherProvider extends ChangeNotifier {
   bool get isSearching => _isSearching;
   WeatherService get weatherService => _weatherService;
 
-  // Setters
   set weatherData(Map<String, dynamic>? data) {
     _weatherData = data;
     notifyListeners();

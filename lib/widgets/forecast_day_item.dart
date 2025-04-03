@@ -9,6 +9,7 @@ class ForecastDayItem extends StatelessWidget {
   final String windSpeed;
   final String rainChance;
   final String weatherIcon;
+  final bool isLastItem;
 
   const ForecastDayItem({
     Key? key,
@@ -19,85 +20,70 @@ class ForecastDayItem extends StatelessWidget {
     required this.windSpeed,
     required this.rainChance,
     required this.weatherIcon,
+    this.isLastItem = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: EdgeInsets.only(right: isLastItem ? 0 : 16),
+      width: 245,
       decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            // ignore: deprecated_member_use
-            color: AppColors.white.withOpacity(0.2),
-            width: 1,
-          ),
-        ),
+        color: Colors.grey.shade700,
+        borderRadius: BorderRadius.circular(10),
       ),
-      child: ExpansionTile(
-        backgroundColor: Colors.transparent,
-        collapsedIconColor: AppColors.white,
-        iconColor: AppColors.white,
-        title: Row(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(
-              flex: 2,
-              child: Text(
-                '$day - $date',
-                style: const TextStyle(
-                  color: AppColors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500
-                ),
-              ),
-            ),
-            Image.network(weatherIcon, width: 28, height: 28),
-            const SizedBox(width: 12),
+            // Date
             Text(
-              '$temperature°C',
+              '($date)',
               style: const TextStyle(
                 color: AppColors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.w500
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            // Weather Icon
+            Image.network(
+              weatherIcon,
+              width: 80,
+              height: 80,
+              errorBuilder: (context, error, stackTrace) {
+                return const Icon(
+                  Icons.cloud,
+                  color: AppColors.white,
+                  size: 60,
+                );
+              },
+            ),
+            Text(
+              'Temp: $temperature°C',
+              style: const TextStyle(
+                color: AppColors.white,
+                fontSize: 20,
+              ),
+            ),
+            Text(
+              'Wind: $windSpeed',
+              style: const TextStyle(
+                color: AppColors.white,
+                fontSize: 20,
+              ),
+            ),
+            Text(
+              'Humidity: $humidity',
+              style: const TextStyle(
+                color: AppColors.white,
+                fontSize: 20,
               ),
             ),
           ],
         ),
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Column(
-              children: [
-                _buildDetailRow(Icons.water_drop, 'Humidity', humidity),
-                const SizedBox(height: 8),
-                _buildDetailRow(Icons.air, 'Wind Speed', windSpeed),
-                const SizedBox(height: 8),
-                _buildDetailRow(Icons.umbrella, 'Rain Chance', rainChance),
-              ],
-            ),
-          ),
-        ],
       ),
-    );
-  }
-
-  Widget _buildDetailRow(IconData icon, String label, String value) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          color: AppColors.white,
-          size: 20,
-        ),
-        const SizedBox(width: 8),
-        Text(
-          '$label: $value',
-          style: const TextStyle(
-            color: AppColors.white,
-            fontSize: 16,
-          ),
-        ),
-      ],
     );
   }
 } 

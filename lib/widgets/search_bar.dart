@@ -41,8 +41,10 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
               child: TextField(
                 controller: widget.searchController,
                 style: const TextStyle(color: AppColors.white),
+                cursorColor: AppColors.white,
                 decoration: InputDecoration(
-                  hintText: 'Tìm kiếm địa điểm...',
+                  hintText: 'Search for a location...',
+                  // ignore: deprecated_member_use
                   hintStyle: TextStyle(color: AppColors.white.withOpacity(0.7)),
                   prefixIcon: const Icon(Icons.search, color: AppColors.white),
                   filled: true,
@@ -60,7 +62,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
             IconButton(
               onPressed: widget.onLocationButtonPressed,
               icon: const Icon(Icons.my_location, color: AppColors.white),
-              tooltip: 'Lấy vị trí hiện tại',
+              tooltip: 'Use current location',
             ),
           ],
         ),
