@@ -47,9 +47,8 @@ class WeatherService {
 
       List<Map<String, dynamic>> history = await getHistory();
       
-      // Kiểm tra xem địa điểm đã tồn tại chưa
       history.removeWhere((item) => item['location'] == historyItem['location']);
-      // Thêm vào đầu danh sách
+
       history.insert(0, historyItem);
       
       await prefs.setString(_historyKey, jsonEncode(history));

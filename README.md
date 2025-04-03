@@ -37,16 +37,10 @@ Clone repository
   cd weather_app
 ```
 
-Cài đặt dependencies
-
-```bash
-  flutter pub get
-```
-
 Chạy ứng dụng
 
 ```bash
-  flutter run
+  flutter run -d chrome
 ```
 
 
